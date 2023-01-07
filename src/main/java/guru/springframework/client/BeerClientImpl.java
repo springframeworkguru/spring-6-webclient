@@ -1,10 +1,12 @@
 package guru.springframework.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
+import java.util.concurrent.Flow;
 
 /**
  * Created by jt, Spring Framework Guru.
@@ -17,6 +19,12 @@ public class BeerClientImpl implements BeerClient {
 
     public BeerClientImpl(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
+    }
+
+    @Override
+    public Flux<JsonNode> listBeersJsonNode() {
+        return webClient.get().uri(BEER_PATH, JsonNode.class)
+                .retrieve().bodyToFlux(JsonNode.class);
     }
 
     @Override
